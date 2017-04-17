@@ -10,7 +10,7 @@ public interface Event{
 	public void dnf();
 	public void cancel();
 	public void clear(int num);
-	public void swap();
+	public boolean swap();
 	public String getEventType();
 	public ArrayDeque<Competitor> getCompleted();
 }

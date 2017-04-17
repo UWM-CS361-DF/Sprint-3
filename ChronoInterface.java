@@ -93,7 +93,9 @@ public class ChronoInterface {
 			System.out.println("Created "+type+" event");
 			return;
 		case "GRP":
-			break;
+			runs.add(runNum, new GrpEvent());
+			System.out.println("Created "+type+" event");
+			return;
 		case "PARGRP":
 			break;
 		}
@@ -137,6 +139,6 @@ public class ChronoInterface {
 	}
 	public void swap(){
 		if(power.powerStatus)
-			runs.get(runNum).swap();
+			System.out.println(runs.get(runNum).swap() ? "Swapped the next racers to finish": "Request to swap racers is invalid");
 	}
 }

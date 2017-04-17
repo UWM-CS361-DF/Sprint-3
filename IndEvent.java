@@ -5,7 +5,6 @@ import java.util.ArrayDeque;
  This class defines the Individual Event object 🎎🤡
  
  */
-
 public class IndEvent implements Event{//extends ChronoInterface implements Event{
 	public ArrayDeque<Competitor> startQueue;// = new ArrayDeque<Competitor>();
 	public ArrayDeque<Competitor> finishQueue;// = new ArrayDeque<Competitor>();
@@ -70,10 +69,17 @@ public class IndEvent implements Event{//extends ChronoInterface implements Even
 	}
 	@Override
 	public void clear(int num){
-		
+		Competitor temp=new Competitor(num);
+		startQueue.remove(temp);
 	}
 	@Override
-	public void swap(){
-		
+	public boolean swap(){
+		if(finishQueue.size()<2)
+			return false;
+		Competitor temp1=finishQueue.remove();
+		Competitor temp2=finishQueue.remove();
+		finishQueue.push(temp1);
+		finishQueue.push(temp2);
+		return true;
 	}
 }

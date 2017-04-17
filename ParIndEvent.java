@@ -59,8 +59,8 @@ public class ParIndEvent implements Event{
 		
 	}
 	@Override
-	public void swap(){
-		
+	public boolean swap(){
+		return false;
 	}
 	@Override
 	public String getEventType(){

@@ -32,6 +32,9 @@ public class Competitor {
 	public int getCompetitorNumber(){
 		return competitorNo;
 	}
+	public void setCompetitorNumber(int competitorNo){
+		this.competitorNo = competitorNo;
+	}
 	@Override
 	public boolean equals(Object c){
 		return ((Competitor)c).getCompetitorNumber()==this.competitorNo;
