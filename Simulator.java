@@ -38,6 +38,11 @@ public class Simulator {
 		String stringInput;
 		String stringTime;
 		
+		GUI gui = new GUI();
+		gui.setTitle("Top View");
+		gui.setSize(800,600);
+		gui.setVisible(true);
+		ChronoInterface.chronoTimer=new ChronoInterface(gui);
 		try{
 			if (args.length > 0 ){
 				scIn = new Scanner(new File(args[0]));
@@ -60,14 +65,14 @@ public class Simulator {
 					if(stringInput.equals("EXIT")){
 						System.out.println("Exited Simulator");
 						scIn.close();
-						break;
+						System.exit(0);
 					}
 					else if(stringInput.equals("RESET")){
-						ChronoInterface.chronoTimer=new ChronoInterface();
+						ChronoInterface.chronoTimer=new ChronoInterface(gui);
 						ChronoInterface.chronoTimer.power.powerStatus=true;
 					}
 					else if(stringInput.equals("POWER")&&!ChronoInterface.chronoTimer.power.powerStatus){
-						ChronoInterface.chronoTimer=new ChronoInterface();
+						ChronoInterface.chronoTimer=new ChronoInterface(gui);
 						ChronoInterface.chronoTimer.power();
 				}
 					else 
