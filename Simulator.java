@@ -34,8 +34,6 @@ public class Simulator {
 	//main method decides whether there is a file input or console input, 
 	//gathers the next line input and sends it to the parse method. 
 	public static void main(String[] args) throws Exception{
-		UI ui = new UI();
-		ChronoInterface.chronoTimer=new ChronoInterface(ui);
 		Scanner scIn;
 		String stringInput;
 		String stringTime;
@@ -62,14 +60,14 @@ public class Simulator {
 					if(stringInput.equals("EXIT")){
 						System.out.println("Exited Simulator");
 						scIn.close();
-						System.exit(0);
+						break;
 					}
 					else if(stringInput.equals("RESET")){
-						ChronoInterface.chronoTimer=new ChronoInterface(ui);
+						ChronoInterface.chronoTimer=new ChronoInterface();
 						ChronoInterface.chronoTimer.power.powerStatus=true;
 					}
 					else if(stringInput.equals("POWER")&&!ChronoInterface.chronoTimer.power.powerStatus){
-						ChronoInterface.chronoTimer=new ChronoInterface(ui);
+						ChronoInterface.chronoTimer=new ChronoInterface();
 						ChronoInterface.chronoTimer.power();
 				}
 					else 

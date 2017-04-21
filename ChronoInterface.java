@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 //******************************************************
 
 public class ChronoInterface {
-	public static ChronoInterface chronoTimer;// = new ChronoInterface();
+	public static ChronoInterface chronoTimer = new ChronoInterface();
 	List<Channel> channels = new ArrayList<Channel>(9);//0 will be an empty channel location for ease of assigning
 	Power power = new Power();
 	boolean runInProgress=true;
@@ -21,9 +21,8 @@ public class ChronoInterface {
 	ArrayList<Event> runs= new ArrayList<Event>();
 	Gson g = new Gson();
 	String json;
-	UI ui;
 	
-	public ChronoInterface(UI ui){
+	public ChronoInterface(){
 		channels.add(0,null);
 		for(int i=1;i<9;i++){
 			channels.add(i,new Channel(i));
@@ -31,15 +30,14 @@ public class ChronoInterface {
 		runs.add(0,null);
 		runs.add(runNum, new IndEvent());
 		Time.systemTime.setTime();
-		this.ui=ui;
 	}
 	public void power(){
-		println(power.power() ? "Power On" : "Power Off");		
+		System.out.println(power.power() ? "Power On" : "Power Off");		
 	}
 	public void time(String time){
 		if(power.powerStatus){
 			Time.systemTime.setTime(Time.systemTime.toSeconds(time));
-			println("Set Time to "+ Time.systemTime.toString(Time.systemTime.getRunningTime()));
+			System.out.println("Set Time to "+ Time.systemTime.toString(Time.systemTime.getRunningTime()));
 		}
 	}
 	public void dnf(){
@@ -52,19 +50,19 @@ public class ChronoInterface {
 	}
 	public void tog(String channel){
 		if(power.powerStatus)
-			println(channels.get(Integer.parseInt(channel)).tog() ? "Channel "+channel+" is Armed" : "Channel "+channel+" is not Armed");
+			System.out.println(channels.get(Integer.parseInt(channel)).tog() ? "Channel "+channel+" is Armed" : "Channel "+channel+" is not Armed");
 	}
 	public void trig(String channel){
 		if(power.powerStatus)
 			if(channels.get(Integer.parseInt(channel)).trig()){
-				println("Triggered Channel "+channel);
+				System.out.println("Triggered Channel "+channel);
 				if(Integer.parseInt(channel)%2==0)
 					runs.get(runNum).finish();
 				else
 					runs.get(runNum).start();
 			}
 			else
-				println("Unable to Trigger Channel "+channel);		
+				System.out.println("Unable to Trigger Channel "+channel);		
 	}
 	public void start(){
 		if(power.powerStatus)
@@ -88,20 +86,18 @@ public class ChronoInterface {
 		switch (type) {
 		case "IND":
 			runs.add(runNum, new IndEvent());
-			println("Created "+type+" event");
+			System.out.println("Created "+type+" event");
 			return;
 		case "PARIND":
 			runs.add(runNum, new ParIndEvent());
-			println("Created "+type+" event");
+			System.out.println("Created "+type+" event");
 			return;
 		case "GRP":
-			runs.add(runNum, new GrpEvent());
-			println("Created "+type+" event");
-			return;
+			break;
 		case "PARGRP":
 			break;
 		}
-		println("Failed to create "+type+" event");
+		System.out.println("Failed to create "+type+" event");
 	}
 	public void newrun(){
 		if(power.powerStatus)
@@ -109,16 +105,16 @@ public class ChronoInterface {
 				runNum++;
 				runs.add(runNum, new IndEvent());
 				runInProgress=true;
-				println("Created Run "+runNum);
+				System.out.println("Created Run "+runNum);
 			}
 			else
-				println("Run "+runNum+" Still In Progress");
+				System.out.println("Run "+runNum+" Still In Progress");
 	}
 	public void endrun() throws Exception{
 		if(power.powerStatus){
 			new Export(runs.get(runNum),runNum);
 			runInProgress=false;
-			println("Ended Run "+(runNum));
+			System.out.println("Ended Run "+(runNum));
 		}
 	}
 	public void print(){
@@ -133,7 +129,7 @@ public class ChronoInterface {
 	}
 	public void num(String number){
 		if(power.powerStatus)
-			println(runs.get(runNum).add(Integer.parseInt(number)) ? "Added "+number+" to Race queue": "Failed to add "+number+" to Race queue");
+			System.out.println(runs.get(runNum).add(Integer.parseInt(number)) ? "Added "+number+" to Race queue": "Failed to add "+number+" to Race queue");
 	}
 	public void clr(String number){
 		if(power.powerStatus)
@@ -141,17 +137,6 @@ public class ChronoInterface {
 	}
 	public void swap(){
 		if(power.powerStatus)
-			println(runs.get(runNum).swap() ? "Swapped the next racers to finish": "Request to swap racers is invalid");
-	}
-	public void println(String out){
-		System.out.println(out);
-		ui.output(out+'\n');
-	}
-	public void print(String out){
-		System.out.print(out);
-		ui.output(out);
-	}
-	public String displayRun(){
-		return runs.get(runNum).displayUI();
+			runs.get(runNum).swap();
 	}
 }
