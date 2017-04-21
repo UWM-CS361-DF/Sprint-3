@@ -18,6 +18,9 @@ public class Time {
 	public void setTime(double time){
 		clock = time;
 	}
+	public double getTime(){
+		return systemTime.toSeconds(new SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().getTime()));
+	}
 	public double getClockTime(){//get current time
 		return clock;
 	}

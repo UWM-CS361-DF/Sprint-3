@@ -1,9 +1,9 @@
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public interface Event{
-	public ArrayDeque<Competitor> startQueue = new ArrayDeque<Competitor>();
-	public ArrayDeque<Competitor> finishQueue = new ArrayDeque<Competitor>();
-	public ArrayDeque<Competitor> completed = new ArrayDeque<Competitor>();
+	public ArrayList<Competitor> startQueue = new ArrayList<Competitor>();
+	public ArrayList<Competitor> finishQueue = new ArrayList<Competitor>();
+	public ArrayList<Competitor> completed = new ArrayList<Competitor>();
 	public boolean add(int competitorNo);
 	public void start();
 	public void finish();
@@ -12,5 +12,6 @@ public interface Event{
 	public void clear(int num);
 	public boolean swap();
 	public String getEventType();
-	public ArrayDeque<Competitor> getCompleted();
+	public ArrayList<Competitor> getCompleted();
+	public String displayUI();
 }

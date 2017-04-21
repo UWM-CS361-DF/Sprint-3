@@ -1,4 +1,4 @@
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 /*
  The IndEvent class :) 
@@ -6,14 +6,14 @@ import java.util.ArrayDeque;
  
  */
 public class IndEvent implements Event{//extends ChronoInterface implements Event{
-	public ArrayDeque<Competitor> startQueue;// = new ArrayDeque<Competitor>();
-	public ArrayDeque<Competitor> finishQueue;// = new ArrayDeque<Competitor>();
-	public ArrayDeque<Competitor> completed;// = new ArrayDeque<Competitor>();
+	public ArrayList<Competitor> startQueue;// = new ArrayDeque<Competitor>();
+	public ArrayList<Competitor> finishQueue;// = new ArrayDeque<Competitor>();
+	public ArrayList<Competitor> completed;// = new ArrayDeque<Competitor>();
 	
 	public IndEvent(){
-		startQueue = new ArrayDeque<Competitor>();
-		finishQueue = new ArrayDeque<Competitor>();
-		completed = new ArrayDeque<Competitor>();
+		startQueue = new ArrayList<Competitor>();
+		finishQueue = new ArrayList<Competitor>();
+		completed = new ArrayList<Competitor>();
 	}
 	
 	// if the start queue of the race is not empty
@@ -31,7 +31,7 @@ public class IndEvent implements Event{//extends ChronoInterface implements Even
 	@Override
 	public void start() {
 		if(!startQueue.isEmpty()){
-			Competitor temp=startQueue.remove();
+			Competitor temp=startQueue.remove(0);
 			temp.setStartTime(Time.systemTime.getRunningTime());
 			finishQueue.add(temp);
 		}
@@ -43,7 +43,7 @@ public class IndEvent implements Event{//extends ChronoInterface implements Even
 	@Override
 	public void finish() {
 		if(!finishQueue.isEmpty()){
-			Competitor temp=finishQueue.remove();
+			Competitor temp=finishQueue.remove(0);
 			temp.setFinishTime(Time.systemTime.getRunningTime());
 			completed.add(temp);
 		}
@@ -51,20 +51,20 @@ public class IndEvent implements Event{//extends ChronoInterface implements Even
 	@Override
 	public void dnf(){
 		Competitor temp;
-		temp=finishQueue.remove();
+		temp=finishQueue.remove(0);
 		temp.dnf=true;
 		completed.add(temp);
 	}
 	@Override
 	public void cancel(){
-		startQueue.addFirst(finishQueue.removeLast());
+		startQueue.add(0,finishQueue.remove(finishQueue.size()-1));
 	}
 	@Override
 	public String getEventType(){
 		return "IND";
 	}
 	@Override
-	public ArrayDeque<Competitor> getCompleted(){
+	public ArrayList<Competitor> getCompleted(){
 		return completed;
 	}
 	@Override
@@ -76,10 +76,29 @@ public class IndEvent implements Event{//extends ChronoInterface implements Even
 	public boolean swap(){
 		if(finishQueue.size()<2)
 			return false;
-		Competitor temp1=finishQueue.remove();
-		Competitor temp2=finishQueue.remove();
-		finishQueue.push(temp1);
-		finishQueue.push(temp2);
+		Competitor temp1=finishQueue.remove(0);
+		Competitor temp2=finishQueue.remove(0);
+		finishQueue.add(0,temp1);
+		finishQueue.add(0,temp2);
 		return true;
+	}
+	public String displayUI(){
+		String starting="Racers Queued\n- - - - - - - - - - - - - - - - - - - - -";
+		for(int i=2; i>-1;i--){
+			if(startQueue.size()>i)
+				starting=starting+'\n'+startQueue.get(i).getCompetitorNumber()+"\t00:00.00";
+		}
+		starting+=">"+'\n';
+		
+		String running="\nRunning Times\n- - - - - - - - - - - - - - - - - - - - - ";
+		for(int i=0; i<finishQueue.size(); i++){
+			running=running+'\n'+finishQueue.get(i).getCompetitorNumber()+'\t'+String.format("%.2f", (Time.systemTime.getTime()-finishQueue.get(i).getStartTime()));
+		}
+		
+		String finished="\n\nFinished Times\n- - - - - - - - - - - - - - - - - - - - - ";
+		if(!completed.isEmpty())
+				finished="\n\nFinished Times\n- - - - - - - - - - - - - - - - - - - - - \n"+completed.get(completed.size()-1).getCompetitorNumber()+'\t'+(completed.get(completed.size()-1).dnf ? "DNF":String.format("%.2f", (completed.get(completed.size()-1).getRaceTime())));
+		
+		return starting+running+finished;
 	}
 }
