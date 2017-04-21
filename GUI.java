@@ -161,16 +161,118 @@ public class GUI extends JFrame{
 		p2.add(p22);
 		contentPane.add(p2);
 
+		//Panel 3
 		
 		JPanel p3 = new JPanel();
+		p3.setLayout(new GridLayout(3,1));
 		
+		JPanel p31 = new JPanel();
+		TitledBorder t5 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder()," ");
+		p31.setBorder(t5);
+		JButton printerPower = new JButton("Printer Power");
+		power.addActionListener(new PrinterPowerListener());	    JTextArea printer = new JTextArea(8, 16);
+	    printer.setEditable(false); // set textArea non-editable
+	    JScrollPane scroll = new JScrollPane(printer);
+	    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		p31.add(printerPower);
+		p31.add(scroll);
+		p3.add(p31);
+
+		JPanel p32 = new JPanel();
+		p32.setLayout(new GridLayout(4,3));
+		JButton keypad7 = new JButton("7");
+		JButton keypad8 = new JButton("8");
+		JButton keypad9 = new JButton("9");
+		JButton keypad4 = new JButton("4");
+		JButton keypad5 = new JButton("5");
+		JButton keypad6 = new JButton("6");
+		JButton keypad1 = new JButton("1");
+		JButton keypad2 = new JButton("2");
+		JButton keypad3 = new JButton("3");
+		JButton keypadAsterick = new JButton("*");
+		JButton keypad0 = new JButton("0");
+		JButton keypadHashtag = new JButton("#");
+		p32.add(keypad7);
+		p32.add(keypad8);
+		p32.add(keypad9);
+		p32.add(keypad4);
+		p32.add(keypad5);
+		p32.add(keypad6);
+		p32.add(keypad1);
+		p32.add(keypad2);
+		p32.add(keypad3);
+		p32.add(keypadAsterick);
+		p32.add(keypad0);
+		p32.add(keypadHashtag);
+		keypad7.addActionListener(new DigitListener());
+		keypad8.addActionListener(new DigitListener());
+		keypad9.addActionListener(new DigitListener());
+		keypad4.addActionListener(new DigitListener());
+		keypad5.addActionListener(new DigitListener());
+		keypad6.addActionListener(new DigitListener());
+		keypad1.addActionListener(new DigitListener());
+		keypad2.addActionListener(new DigitListener());
+		keypad3.addActionListener(new DigitListener());
+		keypadAsterick.addActionListener(new DigitListener());
+		keypad0.addActionListener(new DigitListener());
+		keypadHashtag.addActionListener(new DigitListener());
+		TitledBorder t6 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder()," ");
+		p32.setBorder(t6);
+		p3.add(p32);
+		
+		JPanel p33 = new JPanel();
+		TitledBorder t7 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder()," ");
+		p33.setBorder(t7);
+		p33.setLayout(new GridLayout(2,4));
+		for (int i = 1; i<=8; i++) {
+			JPanel channels = new JPanel();
+			channels.setLayout(new GridLayout(3,1));
+			JLabel channelNumber = new JLabel("" + i + "");
+			JRadioButton channelToggle = new JRadioButton();
+			channelToggle.addActionListener(new ChannelToggleListener());
+			String[] sensorTypes = {"Gate", "Eye", "Pad", "Manual"};
+			JComboBox channelSensors = new JComboBox(sensorTypes);
+			channelSensors.setSelectedIndex(3);
+			channelSensors.addActionListener(new SensorTypeListener());
+			
+			channels.add(channelNumber);
+			channels.add(channelToggle);
+			channels.add(channelSensors);
+			p33.add(channels);
+		}
+		
+		
+		p3.add(p33);
 		contentPane.add(p3);
-		
 	}
 	
 	private class PowerListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			chronoTimer.power();
+		}
+	}
+	
+	private class SensorTypeListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//todo
+		}
+	}
+	
+	private class ChannelToggleListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//todo
+		}
+	}	
+	
+	private class PrinterPowerListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//todo
+		}
+	}
+	
+	private class DigitListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			//todo
 		}
 	}
 	
