@@ -73,7 +73,7 @@ public class GrpEvent implements Event{
 		String running="\nRunning Time\t00:00.00";
 		if(startTime>0){
 			running="\nRunning Time\t"+String.format("%.2f", (Time.systemTime.getTime()-startTime));
-		}
+	}
 		
 		String finished="\n\nFinished Times\n- - - - - - - - - - - - - - - - - - - - -\n ";
 		if(!completed.isEmpty()){

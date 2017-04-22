@@ -143,11 +143,11 @@ public class ChronoInterface {
 	}
 	public void println(String out){
 		System.out.println(out);
-		//gui.output(out+'\n');
+		gui.output(out+'\n');
 	}
 	public void print(String out){
 		System.out.print(out);
-		//gui.output(out);
+		gui.output(out);
 	}
 	public String displayRun(){
 		return runs.get(runNum).displayUI();

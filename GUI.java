@@ -6,24 +6,22 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class GUI extends JFrame{
-	ChronoInterface chronoTimer = new ChronoInterface();
+	//public static ChronoInterface chronoTimer = new ChronoInterface();
+	//ChronoInterface chronoTimer = new ChronoInterface();
 	private static final long serialVersionUID = 1L;
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				GUI a = new GUI();
-				a.setTitle("Top View");
-				a.setSize(800,600);
-				a.setVisible(true);
-			}
-		});
-	}
-	
+
+	JTextArea printer;
+	String[] sensorTypes = {"Gate", "Eye", "Pad", "Manual"};
+	String s1;
+	JTextArea display;
 	public GUI(){
 		JPanel contentPane = new JPanel();
 		contentPane.setLayout(new GridLayout(1,3));
@@ -54,9 +52,6 @@ public class GUI extends JFrame{
 		for(int i = 0; i < 4; i++){
 			JPanel p121 = new JPanel();
 			jb[i] = new JRadioButton(event[i]);
-//			if(ChronoInterface.chronoTimer.power.powerStatus){
-//				jb[i].addActionListener(new EventListener(event[i]));
-//			}
 			jb[i].addActionListener(new EventListener(event[i]));
 			bg.add(jb[i]);
 			p121.add(jb[i]);
@@ -155,22 +150,24 @@ public class GUI extends JFrame{
 		
 		JPanel p22 = new JPanel();
 		p22.setLayout(new BorderLayout());
-		resultPane = new ResultPane();
-		resultPane.setPreferredSize(new Dimension(350,150));
-		p22.add(resultPane,BorderLayout.CENTER);
+		display = new JTextArea(250,150);
+	//	JScrollPane scrollPane = new JScrollPane(display);
+		display.setEditable(false);
+		p22.add(display, BorderLayout.CENTER);
 		p2.add(p22);
 		contentPane.add(p2);
 
-		//Panel 3
 		
 		JPanel p3 = new JPanel();
-		p3.setLayout(new GridLayout(3,1));
+		
+p3.setLayout(new GridLayout(3,1));
 		
 		JPanel p31 = new JPanel();
 		TitledBorder t5 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder()," ");
 		p31.setBorder(t5);
 		JButton printerPower = new JButton("Printer Power");
-		power.addActionListener(new PrinterPowerListener());	    JTextArea printer = new JTextArea(8, 16);
+		power.addActionListener(new PrinterPowerListener());	   
+		printer = new JTextArea(8, 16);
 	    printer.setEditable(false); // set textArea non-editable
 	    JScrollPane scroll = new JScrollPane(printer);
 	    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -180,42 +177,12 @@ public class GUI extends JFrame{
 
 		JPanel p32 = new JPanel();
 		p32.setLayout(new GridLayout(4,3));
-		JButton keypad7 = new JButton("7");
-		JButton keypad8 = new JButton("8");
-		JButton keypad9 = new JButton("9");
-		JButton keypad4 = new JButton("4");
-		JButton keypad5 = new JButton("5");
-		JButton keypad6 = new JButton("6");
-		JButton keypad1 = new JButton("1");
-		JButton keypad2 = new JButton("2");
-		JButton keypad3 = new JButton("3");
-		JButton keypadAsterick = new JButton("*");
-		JButton keypad0 = new JButton("0");
-		JButton keypadHashtag = new JButton("#");
-		p32.add(keypad7);
-		p32.add(keypad8);
-		p32.add(keypad9);
-		p32.add(keypad4);
-		p32.add(keypad5);
-		p32.add(keypad6);
-		p32.add(keypad1);
-		p32.add(keypad2);
-		p32.add(keypad3);
-		p32.add(keypadAsterick);
-		p32.add(keypad0);
-		p32.add(keypadHashtag);
-		keypad7.addActionListener(new DigitListener());
-		keypad8.addActionListener(new DigitListener());
-		keypad9.addActionListener(new DigitListener());
-		keypad4.addActionListener(new DigitListener());
-		keypad5.addActionListener(new DigitListener());
-		keypad6.addActionListener(new DigitListener());
-		keypad1.addActionListener(new DigitListener());
-		keypad2.addActionListener(new DigitListener());
-		keypad3.addActionListener(new DigitListener());
-		keypadAsterick.addActionListener(new DigitListener());
-		keypad0.addActionListener(new DigitListener());
-		keypadHashtag.addActionListener(new DigitListener());
+		String[] keypad = {"7", "8", "9", "4", "5", "6", "1","2", "3", ".", "0", "#"};	
+		for(int i=0; i<keypad.length; i++){
+			JButton keypadButton = new JButton(keypad[i]);
+			p32.add(keypadButton);
+			keypadButton.addActionListener(new DigitListener(keypad[i]));
+		}
 		TitledBorder t6 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder()," ");
 		p32.setBorder(t6);
 		p3.add(p32);
@@ -229,9 +196,17 @@ public class GUI extends JFrame{
 			channels.setLayout(new GridLayout(3,1));
 			JLabel channelNumber = new JLabel("" + i + "");
 			JRadioButton channelToggle = new JRadioButton();
-			channelToggle.addActionListener(new ChannelToggleListener());
-			String[] sensorTypes = {"Gate", "Eye", "Pad", "Manual"};
-			JComboBox channelSensors = new JComboBox(sensorTypes);
+			channelToggle.addActionListener(new ChannelToggleListener(i));
+			JComboBox<String> channelSensors = new JComboBox<String>(sensorTypes);
+			channelSensors.addItemListener(new ItemListener(){
+				public void itemStateChanged(ItemEvent evt){
+					if(evt.getStateChange()==ItemEvent.SELECTED){
+						try{
+							s1 = evt.getItem().toString();
+						}catch(Exception e){}
+					}
+				}
+			});
 			channelSensors.setSelectedIndex(3);
 			channelSensors.addActionListener(new SensorTypeListener());
 			
@@ -244,23 +219,31 @@ public class GUI extends JFrame{
 		
 		p3.add(p33);
 		contentPane.add(p3);
+		
 	}
 	
 	private class PowerListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			chronoTimer.power();
+			ChronoInterface.chronoTimer.power();
 		}
 	}
 	
 	private class SensorTypeListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			//todo
+			
 		}
 	}
-	
 	private class ChannelToggleListener implements ActionListener {
+		String c;
+		ChannelToggleListener(int i){
+			c=String.valueOf(i);
+		}
 		public void actionPerformed(ActionEvent e) {
-			//todo
+			JRadioButton channel = (JRadioButton) e.getSource();
+			if(channel.isSelected())
+				ChronoInterface.chronoTimer.conn(s1, c);
+			else
+				ChronoInterface.chronoTimer.disc(c);
 		}
 	}	
 	
@@ -269,10 +252,20 @@ public class GUI extends JFrame{
 			//todo
 		}
 	}
-	
+	String num="";
 	private class DigitListener implements ActionListener {
+		String n;
+		DigitListener(String s){
+			n = s;
+		}
 		public void actionPerformed(ActionEvent e) {
-			//todo
+			if(n.equals("#")){
+				ChronoInterface.chronoTimer.num(num);
+				num="";
+			}
+			else
+				num=num+n;
+				
 		}
 	}
 	
@@ -283,26 +276,26 @@ public class GUI extends JFrame{
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			chronoTimer.event(evt);
+			ChronoInterface.chronoTimer.event(evt);
 		}
 	}
 	
 	private class SwapListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			chronoTimer.swap();
+			ChronoInterface.chronoTimer.swap();
 		}
 	}
 	
 	private class TrigListener implements ActionListener {
 		String channel;
-		Channel c;
+		//Channel c;
 		TrigListener(int i){
 			channel = String.valueOf(i);
-			c = new Channel(i);
+		//	c = new Channel(i);
 		}
 		public void actionPerformed(ActionEvent e) {
-			c.trig();
-			chronoTimer.trig(channel);
+		//	c.trig();
+			ChronoInterface.chronoTimer.trig(channel);
 		}
 	}
 	
@@ -322,21 +315,20 @@ public class GUI extends JFrame{
 			else{
 				c.isArmed = false;
 			}
-			chronoTimer.tog(arm);
+			ChronoInterface.chronoTimer.tog(arm);
 		}
 	}
 	
-	private ResultPane resultPane;
-	
-	private class ResultPane extends JPanel {
-		private static final long serialVersionUID = 1L;
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.setColor(Color.BLACK);
-		}
-		public void paint(Graphics g) {
-			super.paint(g);
-			g.setColor(Color.white);
+	private class ClockListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			display.setText(ChronoInterface.chronoTimer.displayRun());
 		}
 	}
-}
+	public void output(String out){
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+		      printer.append(out);
+		    }
+	 });
+}}
+
