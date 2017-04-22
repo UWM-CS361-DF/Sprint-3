@@ -39,7 +39,12 @@ public class GrpEvent implements Event{
 		temp.setStartTime(startTime);
 		completed.add(temp);
 	}
-	
+	@Override
+	public void end() {
+		startQueue.clear();
+		while(!finishQueue.isEmpty())
+			dnf();		
+	}
 	@Override
 	public void dnf() {
 		Competitor temp=new Competitor(-(completed.size()+1));
@@ -72,14 +77,14 @@ public class GrpEvent implements Event{
 	public String displayUI(){	
 		String running="\nRunning Time\t00:00.00";
 		if(startTime>0){
-			running="\nRunning Time\t"+String.format("%.2f", (Time.systemTime.getTime()-startTime));
+			running="\nRunning Time\t"+Time.systemTime.toString(Time.systemTime.getRunningTime()-startTime);
 	}
 		
 		String finished="\n\nFinished Times\n- - - - - - - - - - - - - - - - - - - - -\n ";
 		if(!completed.isEmpty()){
 			int temp=completed.get(completed.size()-1).getCompetitorNumber();
 			finished=finished+ (temp<0 ? String.format("%05d", -temp)+ "\t": temp+ "\t");
-			finished=finished+String.format("%.2f", (completed.get(completed.size()-1).getRaceTime()));
+			finished=finished+Time.systemTime.toString(completed.get(completed.size()-1).getRaceTime());
 		}
 		return running+finished;
 	}

@@ -12,7 +12,7 @@ public class Print {
 			for(Competitor competitor:temp){
 				int tempBib=competitor.getCompetitorNumber();
 				ChronoInterface.chronoTimer.print(tempBib<0 ? String.format("%05d", -tempBib)+ "\t": tempBib+ "\t");
-				ChronoInterface.chronoTimer.println(competitor.dnf ? "DNF" : String.format("%.2f", competitor.getRaceTime()));
+				ChronoInterface.chronoTimer.println(competitor.dnf ? "DNF" : Time.systemTime.toString(competitor.getRaceTime()));
 			}
 		}
 	}

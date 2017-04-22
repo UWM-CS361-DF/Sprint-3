@@ -11,27 +11,27 @@ public class Time {
 	private double minute;
 	private double second;
 	private double clock;
+	private boolean file;
 	
 	public void setTime(){
 		clock=systemTime.toSeconds(new SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().getTime()));
 	}
 	public void setTime(double time){
 		clock = time;
-	}
-	public double getTime(){
-		return systemTime.toSeconds(new SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().getTime()));
-	}
-	public double getClockTime(){//get current time
-		return clock;
+		file=true;
 	}
 	public double getRunningTime(){//get the race time
-		return clock;
+		if(file)
+			return clock;
+		else
+			return systemTime.toSeconds(new SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().getTime()));
 	}
 	public String toString(double time){//parse to String format
-		int hour = (int) (time/3600);
-		int min = (int) ((time-hour*3600)/60);
-		double second = (double) (time-hour*3600-min*60);
-		return String.format("%02d", hour)+":"+String.format("%02d", min)+":"+String.format("%.2f",second);
+		//int hour = (int) (time/3600);
+		//int min = (int) time/60;
+		//double second = time%60;
+		//return String.format("%02d", min)+":"+String.format("%.2f",second);
+		return String.format("%.2f",time);
 	}
 	public double toSeconds(String time){//parse time to seconds format	
 		this.time= time.split(":");
@@ -40,4 +40,5 @@ public class Time {
 		second=Float.parseFloat(this.time[2]);
 		return (double) (hour*3600+minute*60+second);
 	}
+	
 }

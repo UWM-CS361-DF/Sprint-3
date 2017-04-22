@@ -1,7 +1,9 @@
 
 public class Channel{
+	Sensor sensorType;
 	public int channelNo;
 	public boolean isArmed;
+
 	public Channel(int channelNo){
 		this.channelNo=channelNo;
 		isArmed=false;
@@ -17,10 +19,12 @@ public class Channel{
 		isArmed=!isArmed;
 		return isArmed;
 	}
-	public void conn(String sensor){//not used yet
-		
+	public Sensor conn(String sensor){//not used yet
+		sensorType=new Sensor(sensor);
+		return sensorType;
 	}
-	public void disc(int channelNo){//not used yet
-		
+	public Sensor disc(){//not used yet
+		sensorType=null;
+		return sensorType;
 	}
 }

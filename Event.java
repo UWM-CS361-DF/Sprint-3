@@ -7,6 +7,7 @@ public interface Event{
 	public boolean add(int competitorNo);
 	public void start();
 	public void finish();
+	public void end();
 	public void dnf();
 	public void cancel();
 	public void clear(int num);

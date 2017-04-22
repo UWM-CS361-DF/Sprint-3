@@ -60,7 +60,7 @@ public class Simulator {
 					}
 					else{
 						stringInput=scIn.nextLine();
-						Time.systemTime.setTime();
+						//Time.systemTime.setTime();
 					}
 					if(stringInput.equals("EXIT")){
 						System.out.println("Exited Simulator");
@@ -69,9 +69,9 @@ public class Simulator {
 					}
 					else if(stringInput.equals("RESET")){
 						ChronoInterface.chronoTimer=new ChronoInterface(gui);
-						ChronoInterface.chronoTimer.power.powerStatus=true;
+						ChronoInterface.chronoTimer.power.power();
 					}
-					else if(stringInput.equals("POWER")&&!ChronoInterface.chronoTimer.power.powerStatus){
+					else if(stringInput.equals("POWER")&&!ChronoInterface.chronoTimer.power.powerStatus()){
 						ChronoInterface.chronoTimer=new ChronoInterface(gui);
 						ChronoInterface.chronoTimer.power();
 				}

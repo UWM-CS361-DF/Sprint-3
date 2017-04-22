@@ -49,6 +49,12 @@ public class IndEvent implements Event{//extends ChronoInterface implements Even
 		}
 	}
 	@Override
+	public void end() {
+		startQueue.clear();
+		while(!finishQueue.isEmpty())
+			dnf();	
+	}
+	@Override
 	public void dnf(){
 		Competitor temp;
 		temp=finishQueue.remove(0);
@@ -92,12 +98,12 @@ public class IndEvent implements Event{//extends ChronoInterface implements Even
 		
 		String running="\nRunning Times\n- - - - - - - - - - - - - - - - - - - - - ";
 		for(int i=0; i<finishQueue.size(); i++){
-			running=running+'\n'+finishQueue.get(i).getCompetitorNumber()+'\t'+String.format("%.2f", (Time.systemTime.getTime()-finishQueue.get(i).getStartTime()));
+			running=running+'\n'+finishQueue.get(i).getCompetitorNumber()+'\t'+Time.systemTime.toString(Time.systemTime.getRunningTime()-finishQueue.get(i).getStartTime());
 		}
 		
 		String finished="\n\nFinished Times\n- - - - - - - - - - - - - - - - - - - - - ";
 		if(!completed.isEmpty())
-				finished="\n\nFinished Times\n- - - - - - - - - - - - - - - - - - - - - \n"+completed.get(completed.size()-1).getCompetitorNumber()+'\t'+(completed.get(completed.size()-1).dnf ? "DNF":String.format("%.2f", (completed.get(completed.size()-1).getRaceTime())));
+				finished="\n\nFinished Times\n- - - - - - - - - - - - - - - - - - - - - \n"+completed.get(completed.size()-1).getCompetitorNumber()+'\t'+(completed.get(completed.size()-1).dnf ? "DNF":Time.systemTime.toString((completed.get(completed.size()-1).getRaceTime())));
 		
 		return starting+running+finished;
 	}

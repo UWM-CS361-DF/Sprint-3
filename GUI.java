@@ -2,25 +2,20 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class GUI extends JFrame{
-	//public static ChronoInterface chronoTimer = new ChronoInterface();
-	//ChronoInterface chronoTimer = new ChronoInterface();
 	private static final long serialVersionUID = 1L;
 
 	JTextArea printer;
 	String[] sensorTypes = {"Gate", "Eye", "Pad", "Manual"};
-	String s1;
+	String[] sensors=new String[8];
 	JTextArea display;
 	public GUI(){
 		JPanel contentPane = new JPanel();
@@ -31,7 +26,7 @@ public class GUI extends JFrame{
 		
 		//Panel 1
 		JPanel p1 = new JPanel();
-		p1.setLayout(new GridLayout(3,1));
+		p1.setLayout(new GridLayout(4,1));
 		
 		JPanel p11 = new JPanel();
 		TitledBorder t1 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder()," ");
@@ -41,8 +36,26 @@ public class GUI extends JFrame{
 		p11.add(power);
 		p1.add(p11);
 		
+		//Panel for new run / end run
+		JPanel p15 = new JPanel();
+		p15.setLayout(new GridLayout(1,2));
+
+		JPanel p10 = new JPanel();
+		JButton newRun = new JButton("New Run");
+		newRun.addActionListener(new NewRunListener());
+		p10.add(newRun);
+		p15.add(p10);
+		
+		JPanel p14 = new JPanel();
+		JButton endRun = new JButton("End Run");
+		endRun.addActionListener(new EndRunListener());
+		p14.add(endRun);
+		p15.add(p14);
+		
+		p1.add(p15);
+		
 		JPanel p12 = new JPanel();
-		p12.setLayout(new GridLayout(2,2));
+		p12.setLayout(new GridLayout(3,2));
 		TitledBorder t2 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "EVENT");
 		t2.setTitleJustification(TitledBorder.CENTER);
 		p12.setBorder(t2);
@@ -150,23 +163,26 @@ public class GUI extends JFrame{
 		
 		JPanel p22 = new JPanel();
 		p22.setLayout(new BorderLayout());
+		p22.setBorder(BorderFactory.createLineBorder(Color.black));
 		display = new JTextArea(250,150);
-	//	JScrollPane scrollPane = new JScrollPane(display);
 		display.setEditable(false);
 		p22.add(display, BorderLayout.CENTER);
 		p2.add(p22);
 		contentPane.add(p2);
 
+		ActionListener updateClockAction = new ClockListener();
+		Timer t = new Timer(100, updateClockAction);
+		t.start();
 		
 		JPanel p3 = new JPanel();
 		
-p3.setLayout(new GridLayout(3,1));
+		p3.setLayout(new GridLayout(3,1));
 		
 		JPanel p31 = new JPanel();
 		TitledBorder t5 = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder()," ");
 		p31.setBorder(t5);
 		JButton printerPower = new JButton("Printer Power");
-		power.addActionListener(new PrinterPowerListener());	   
+		printerPower.addActionListener(new PrinterPowerListener());	   
 		printer = new JTextArea(8, 16);
 	    printer.setEditable(false); // set textArea non-editable
 	    JScrollPane scroll = new JScrollPane(printer);
@@ -198,17 +214,8 @@ p3.setLayout(new GridLayout(3,1));
 			JRadioButton channelToggle = new JRadioButton();
 			channelToggle.addActionListener(new ChannelToggleListener(i));
 			JComboBox<String> channelSensors = new JComboBox<String>(sensorTypes);
-			channelSensors.addItemListener(new ItemListener(){
-				public void itemStateChanged(ItemEvent evt){
-					if(evt.getStateChange()==ItemEvent.SELECTED){
-						try{
-							s1 = evt.getItem().toString();
-						}catch(Exception e){}
-					}
-				}
-			});
+			channelSensors.addActionListener(new SensorTypeListener(i, channelSensors));
 			channelSensors.setSelectedIndex(3);
-			channelSensors.addActionListener(new SensorTypeListener());
 			
 			channels.add(channelNumber);
 			channels.add(channelToggle);
@@ -228,20 +235,48 @@ p3.setLayout(new GridLayout(3,1));
 		}
 	}
 	
+	private class NewRunListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			ChronoInterface.chronoTimer.newrun();
+		}
+	}
+	
+	private class EndRunListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			try {
+				ChronoInterface.chronoTimer.endrun();
+			} catch (Exception e1) {}
+		}
+	}
+	
 	private class SensorTypeListener implements ActionListener {
+		public SensorTypeListener(int i, JComboBox<String> channelSensors) {
+			channelSensors.addItemListener(new ItemListener(){
+				public void itemStateChanged(ItemEvent evt){
+					if(evt.getStateChange()==ItemEvent.SELECTED){
+						try{
+							sensors[i] = evt.getItem().toString();
+						}catch(Exception e){}
+					}
+				}
+			});
+		}
+
 		public void actionPerformed(ActionEvent e) {
 			
 		}
 	}
 	private class ChannelToggleListener implements ActionListener {
 		String c;
+		int cInt;
 		ChannelToggleListener(int i){
+			cInt=i;
 			c=String.valueOf(i);
 		}
 		public void actionPerformed(ActionEvent e) {
 			JRadioButton channel = (JRadioButton) e.getSource();
 			if(channel.isSelected())
-				ChronoInterface.chronoTimer.conn(s1, c);
+				ChronoInterface.chronoTimer.conn(sensors[cInt], c);
 			else
 				ChronoInterface.chronoTimer.disc(c);
 		}
@@ -249,7 +284,7 @@ p3.setLayout(new GridLayout(3,1));
 	
 	private class PrinterPowerListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			//todo
+			ChronoInterface.chronoTimer.printer();
 		}
 	}
 	String num="";
@@ -288,40 +323,29 @@ p3.setLayout(new GridLayout(3,1));
 	
 	private class TrigListener implements ActionListener {
 		String channel;
-		//Channel c;
 		TrigListener(int i){
 			channel = String.valueOf(i);
-		//	c = new Channel(i);
 		}
 		public void actionPerformed(ActionEvent e) {
-		//	c.trig();
 			ChronoInterface.chronoTimer.trig(channel);
 		}
 	}
 	
 	private class TogListener implements ActionListener {
 		String arm;
-		Channel c;
 		TogListener(int i){
 			arm = String.valueOf(i);
-			c = new Channel(i);
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			JRadioButton j =  (JRadioButton) e.getSource();
-			if(j.isSelected()){
-				c.isArmed = true;
-			}
-			else{
-				c.isArmed = false;
-			}
 			ChronoInterface.chronoTimer.tog(arm);
 		}
 	}
 	
 	private class ClockListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			display.setText(ChronoInterface.chronoTimer.displayRun());
+			if(ChronoInterface.chronoTimer!=null)
+				display.setText(ChronoInterface.chronoTimer.displayRun());
 		}
 	}
 	public void output(String out){
